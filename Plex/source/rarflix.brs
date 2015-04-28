@@ -684,6 +684,11 @@ sub rfVideoMoreButton(obj as Object) as Dynamic
 
     ' ljunkie - Home Screen shortcut ( if we are not already on the homescreen )
     ' always first button
+
+    if obj.metadata.server.AllowsMediaDeletion AND obj.metadata.mediaContainerIdentifier = "com.plexapp.plugins.library" then
+        dialog.SetButton("delete", "Delete permanently")
+    end if
+
     vc = GetViewController()
     screen = vc.screens.peek()
     if vc.Home <> invalid AND screen <> invalid and screen.screenid <> vc.Home.ScreenID then 
@@ -739,9 +744,6 @@ sub rfVideoMoreButton(obj as Object) as Dynamic
                 dialog.SetButton("scrobble", "Mark as watched")
                 ' no need to show unwatched 
             end if
-        end if
-        if obj.metadata.server.AllowsMediaDeletion AND obj.metadata.mediaContainerIdentifier = "com.plexapp.plugins.library" then
-            dialog.SetButton("delete", "Delete permanently")
         end if
 
         ' cast & crew is already on this screen
