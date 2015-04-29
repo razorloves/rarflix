@@ -1326,12 +1326,19 @@ sub updateVideoHUD(m,curProgress,releaseDate = invalid)
 
     endString = invalid
     watchedString = invalid
+    padding = "             "
 
     date = CreateObject("roDateTime")
     if m.VideoItem.Duration <> invalid and m.VideoItem.Duration > 0 then
         duration = int(m.VideoItem.Duration/1000)
         timeLeft = int(Duration - curProgress)
-        endString = "End Time: " + RRmktime(date.AsSeconds()+timeLeft) + "  (" + GetDurationString(timeLeft,0,1,1) + ")" + "  Watched: " + GetDurationString(int(curProgress),0,0,1)
+
+        if m.VideoItem.audiocodec = "ac3" then
+            endString = padding + "End Time: " + RRmktime(date.AsSeconds()+timeLeft) + "  (" + GetDurationString(timeLeft,0,1,1) + ")" + chr(10) + padding + "Watched: " + GetDurationString(int(curProgress),0,0,1)
+        else
+            endString = "End Time: " + RRmktime(date.AsSeconds()+timeLeft) + "  (" + GetDurationString(timeLeft,0,1,1) + ")" + chr(10) + "Watched: " + GetDurationString(int(curProgress),0,0,1)
+        end if
+
     else
          ' include current time and watched time when video duration is unavailable (HLS & web videos)
          watchedString = "Time: " + RRmktime(date.AsSeconds()) + "     Watched: " + GetDurationString(int(curProgress),0,0,1)

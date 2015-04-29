@@ -203,23 +203,30 @@ Function videoPlayerCreateVideoPlayer()
         videoItem.ReleaseDate = videoItem.ReleaseDate + "   Transcoded"
     else
 
-       audioCh = ""
-       if videoItem.audioCh <> invalid then
-           if (videoItem.audioCh.toint() = 6) then
-               audioCh = "5.1"
-           else
-              audioCh = tostr(videoItem.audioCh) + "ch"
-           end if
-       end if
+        audioCh = ""
+        if videoItem.audioCh <> invalid then
+            if (videoItem.audioCh.toint() = 6) then
+                audioCh = "5.1"
+            else
+                audioCh = tostr(videoItem.audioCh) + "ch"
+            end if
+        end if
 
-       if (tostr(videoItem.audioCodec) = "dca") then
+        if (tostr(videoItem.audioCodec) = "dca") then
        	    audioCodec = "DTS"
-       else
+        else
        	    audioCodec = tostr(videoItem.audioCodec)
-       end if
+        end if
 
-        videoItem.ReleaseDate = videoItem.ReleaseDate + "   Direct Play (" + tostr(videoItem.videoRes) + "p " + audioCh + " " + audioCodec + " " + tostr(videoItem.StreamFormat) + ")"
+        padding = "             "
 
+        if audiocodec = "ac3" then
+            videoItem.ReleaseDate = padding + videoItem.ReleaseDate + "  Direct Play"
+                videoItem.ReleaseDate = videoItem.ReleaseDate + chr(10) + padding + "(" + tostr(videoItem.videoRes) + "p " + audioCh + " " + audioCodec + " " + tostr(videoItem.StreamFormat) + ")"
+        else
+            videoItem.ReleaseDate = videoItem.ReleaseDate + "  Direct Play"
+                videoItem.ReleaseDate = videoItem.ReleaseDate + chr(10) + "(" + tostr(videoItem.videoRes) + "p " + audioCh + " " + audioCodec + " " + tostr(videoItem.StreamFormat) + ")"
+        end if
     end if
 
     player = CreateObject("roVideoScreen")
@@ -528,8 +535,15 @@ Sub videoPlayerOnUrlEvent(msg, requestContext)
                     audio = "copy"
                 end if
 
-                m.VideoItem.ReleaseDate = m.VideoItem.OrigReleaseDate + "   Transcoded " + " (" + videoRes + " " + audioChannel + ")"
-                m.VideoItem.ReleaseDate = m.VideoItem.ReleaseDate + chr(10)  + "video: " + video  + "    audio: " + audio + "    "
+				padding = "           "
+
+                if m.VideoItem.audiocodec = "ac3" then
+                    m.VideoItem.ReleaseDate = "   " + m.VideoItem.OrigReleaseDate + "   Transcoded " + " (" + videoRes + " " + audioChannel + ")"
+                        m.VideoItem.ReleaseDate = m.VideoItem.ReleaseDate + chr(10) + padding + "video: " + video  + "   audio: " + audio
+                else
+                    m.VideoItem.ReleaseDate = m.VideoItem.OrigReleaseDate + "   Transcoded " + " (" + videoRes + " " + audioChannel + ")"
+                        m.VideoItem.ReleaseDate = m.VideoItem.ReleaseDate + chr(10)  + "video: " + video  + "    audio: " + audio
+                end if
                 ' + curState -- doesn't seem useful - this doesn't get updated on the fly, 
                 ' useful if moved to: videoPlayerHandleMessage -> msg.isPlaybackPosition
                 ' ljunkie - update the HUD with transcode info 
