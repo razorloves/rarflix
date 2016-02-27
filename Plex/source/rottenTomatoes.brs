@@ -10,8 +10,6 @@ Function getRottenTomatoesData(movieTitle)
     '  * removed using cloudfront -- it doesn't cache urls with parameters
     '  * RR ec2 instances are using squid caching - we cache uri parameters too!
     rt_url = "http://api.rottentomatoes.com"
-    rt_proxy = "http://rottentomatoes.rarflix.com" ' cloudfront -> ELB ...
-    if rt_proxy <> invalid then rt_url = rt_proxy
     url = rt_url + "/api/public/v1.0/movies.json?apikey="+apikey+"&page_limit=1&q=" + movieTitle
     Debug("Calling Rotten Tomatoes API for " + movieTitle)
 
